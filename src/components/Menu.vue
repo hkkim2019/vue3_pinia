@@ -17,14 +17,22 @@ const data = reactive({
 
 const getData = () => {
   if(foodStore.selected===1){
-    fetch('/api/restinfo/restBestfoodList?key='+import.meta.env.VITE_SERVICE_KEY+'&type=json&numOfRows=10&pageNo=1', {
-      headers: { 'Content-type': 'application/json' },
-    }).then(res=>res.json()).then((response) => {
-      console.log({ response });
-      data.list=response.list;
-    }).catch((error) => {
-      console.log('Looks like there was a problem: \n', error);
-    });
+    const baseUrl = '/api/restinfo/restBestfoodList';
+    const params = {
+      key: import.meta.env.VITE_SERVICE_KEY,
+      type: 'json',
+      numOfRows: 10,
+      pageNo: 1,
+    };
+    const query = new URLSearchParams(params).toString();
+    const url = `${baseUrl}?${query}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        data.list=res.list;
+      })
+      .catch((err) => console.log(err));
   }
 }
 
