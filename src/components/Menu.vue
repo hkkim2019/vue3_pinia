@@ -1,5 +1,6 @@
 <script setup>
 import List from './List.vue'
+import Pagination from './Pagination.vue'
 import DocumentationIcon from './icons/IconDocumentation.vue'
 
 import { ref, reactive, watch } from 'vue';
@@ -13,17 +14,18 @@ import route from '@/code/Route';
 const foodStore = useFoodStore();
 const { selected } = storeToRefs(foodStore);
 
+const pageNo = ref(1);
+const numOfRows = ref(10);
 const routeCd = ref('');
 const recommendyn = ref('');
 const bestfoodyn = ref('');
 const premiumyn = ref('');
 const ynOption = reactive([{name:'선택하세요', value:''},{name:'Y', value:'Y'},{name:'N', value:'N'}]);
 const data = reactive({
+  count: 0,
   list: [],
   showList: [],
 });
-
-console.log(route);
 
 const getData = () => {
   if(foodStore.selected===1){
@@ -31,8 +33,8 @@ const getData = () => {
     const params = {
       key: import.meta.env.VITE_SERVICE_KEY,
       type: 'json',
-      numOfRows: '10',
-      pageNo: '1',
+      numOfRows: numOfRows.value,
+      pageNo: pageNo.value,
       /* 옵션 */
       routeCd: routeCd.value, // 노선
       // routeNm: '경부선',
@@ -50,6 +52,7 @@ const getData = () => {
         console.log(res);
         data.list=[];
         data.showList=[];
+        data.count=res.count;
         data.list=res.list;
         data.list.forEach(e=>{
           data.showList.push({'stdRestNm': e.stdRestNm, 'foodNm': e.foodNm, 'foodCost': e.foodCost, 'recommendyn': e.recommendyn, 'seasonMenu': e.seasonMenu, 'bestfoodyn': e.bestfoodyn, 'premiumyn': e.premiumyn})
@@ -64,8 +67,16 @@ const getData = () => {
 watch(foodStore, ()=>{
   console.log(foodStore.selected);
   getData();
-}, { immediate: true }
-,  { deep: true })
+}
+// , { immediate: true }
+// , { deep: true }
+)
+
+function changePage(page){
+  console.log(page);
+  pageNo.value=page;
+  getData();
+}
 </script>
 
 <template>
@@ -138,7 +149,7 @@ watch(foodStore, ()=>{
           <template v-else>
             <tr>
               <td class="td" colspan="7" style="text-align:center;">
-                조회된 데이터가 업습니다.
+                조회된 데이터가 없습니다.
               </td>
             </tr>
           </template>
@@ -146,6 +157,7 @@ watch(foodStore, ()=>{
     </table>
     </div>
   </List>
+  <Pagination :totalCount="data.count" @changePage="changePage"/>
 </template>
 
 <style scoped>
