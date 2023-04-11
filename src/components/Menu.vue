@@ -64,8 +64,10 @@ const getData = () => {
   }
 }
 
-watch(foodStore, ()=>{
-  console.log(foodStore.selected);
+watch(selected, ()=>{
+  // foodStore watch는 selected, currentPage 때문에 두 번 호출하게됨
+  // console.log(foodStore.selected);
+  console.log(selected.value);
   getData();
 }
 // , { immediate: true }
