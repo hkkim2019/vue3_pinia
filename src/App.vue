@@ -17,6 +17,7 @@ import { ref } from 'vue';
   <main>
     <Menu />
   </main>
+  <router-view></router-view>
 </template>
 
 <style scoped>
