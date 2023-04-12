@@ -7,12 +7,15 @@ import { ref, reactive, watch } from 'vue';
 
 import {storeToRefs} from 'pinia'
 import {useFoodStore} from '../store/food'
+import {useUtilStore} from '../store/util'
 
 import route from '../code/Route';
 
 
 const foodStore = useFoodStore();
 const { selected } = storeToRefs(foodStore);
+
+const utilStore = useUtilStore();
 
 const pageNo = ref(1);
 const numOfRows = ref(10);
@@ -46,6 +49,7 @@ const getData = () => {
     };
     const query = new URLSearchParams(params).toString();
     const url = `${baseUrl}?${query}`;
+    utilStore.startSpinner();
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
@@ -59,8 +63,12 @@ const getData = () => {
         })
         data.showList=[...data.showList];
         // this.$forceUpdate();
+        utilStore.endSpinner();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        utilStore.endSpinner();
+      });
   }
 }
 

@@ -2,6 +2,10 @@
 import Home from './components/Home.vue'
 import Menu from './components/Menu.vue'
 import { ref } from 'vue';
+import Spinner from './components/Spinner.vue';
+import {useUtilStore} from './store/util'
+
+const utilStore = useUtilStore();
 
 </script>
 
@@ -18,6 +22,7 @@ import { ref } from 'vue';
     <Menu />
   </main>
   <router-view></router-view>
+  <Spinner :loading="utilStore.loadingStatus"/>
 </template>
 
 <style scoped>
