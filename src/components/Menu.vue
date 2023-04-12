@@ -8,7 +8,7 @@ import { ref, reactive, watch } from 'vue';
 import {storeToRefs} from 'pinia'
 import {useFoodStore} from '../store/food'
 
-import route from '@/code/Route';
+import route from '../code/Route';
 
 
 const foodStore = useFoodStore();
